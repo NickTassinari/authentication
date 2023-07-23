@@ -1,3 +1,4 @@
+
 # models/user.rb
 class User < ApplicationRecord
   validates :username, uniqueness: true, presence: true
@@ -6,4 +7,5 @@ class User < ApplicationRecord
   has_secure_password
 
   enum role: %w(default manager admin)
+
 end
