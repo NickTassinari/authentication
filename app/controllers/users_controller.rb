@@ -1,33 +1,38 @@
-class UsersController < ApplicationController 
-  def new 
+class UsersController < ApplicationController
+
+  def new
     @user = User.new
   end
 
-  def create 
-    user = user_params
-    user[:username] = user[:username].downcase 
+  def create
     new_user = User.create(user_params)
-      flash[:success] = "Welcome, #{new_user.username}!"
-    redirect_to root_path 
+    session[:user_id] = new_user.id
+    flash[:success] = "Welcome, #{new_user.username}!"
+    redirect_to root_path
   end
 
-  def login_form 
+  def login_form
   end
 
-  def login 
+  def login
     user = User.find_by(username: params[:username])
-    if user.authenticate(params[:password])
-      session[:user_id] = user.id 
+    if user && user.authenticate(params[:password])
+      session[:user_id] = user.id
       flash[:success] = "Welcome, #{user.username}!"
-      redirect_to root_path
-    else  
+      if user.admin? 
+        redirect_to admin_dashboard_path 
+      elsif user.manager? 
+        redirect_to root_path
+      elsif redirect_to root_path
+      end
+    else
       flash[:error] = "Sorry, your credentials are bad."
       render :login_form
-    end 
+    end
   end
-
-  private 
-  def user_params 
-    params.require(:user).permit(:username, :password)
+  
+  private
+  def user_params
+    params.require(:user).permit(:username, :password, :role)
   end
 end

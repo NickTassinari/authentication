@@ -25,7 +25,7 @@ RSpec.describe "Logging In" do
   
     # we don't have to go through root_path and click the "I have an account" link any more
     visit login_path
-    
+
   
     fill_in :username, with: user.username
     fill_in :password, with: "incorrect password"
